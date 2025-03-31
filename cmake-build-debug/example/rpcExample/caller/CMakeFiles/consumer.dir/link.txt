@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/consumer.dir/callFriendService.cpp.o CMakeFiles/consumer.dir/__/friend.pb.cc.o -o ../../../../bin/consumer   -L/home/kv/kvraft/KVstorageBaseRaft-cpp-main/lib  -Wl,-rpath,/home/kv/kvraft/KVstorageBaseRaft-cpp-main/lib ../../../../lib/librpc_lib.a -lprotobuf -lboost_serialization 
