@@ -1,5 +1,5 @@
 //
-// Created by swx on 24-1-4.
+// 封装
 //
 #include "raftServerRpcUtil.h"
 
@@ -12,20 +12,27 @@ raftServerRpcUtil::raftServerRpcUtil(std::string ip, short port) {
   //发送rpc设置
   stub = new raftKVRpcProctoc::kvServerRpc_Stub(new MprpcChannel(ip, port, false));
 }
-
 raftServerRpcUtil::~raftServerRpcUtil() { delete stub; }
 
-bool raftServerRpcUtil::Get(raftKVRpcProctoc::GetArgs *GetArgs, raftKVRpcProctoc::GetReply *reply) {
+template <typename ArgsType, typename ReplyType>
+bool raftServerRpcUtil::SendRpcRequest(ArgsType *args, ReplyType *reply, bool(raftKVRpcProctoc::kvServerRpc_Stub *rpcMethod)(MprpcController*, ArgsType*, ReplyType*, google::protobuf::Closure*)){
   MprpcController controller;
-  stub->Get(&controller, GetArgs, reply, nullptr);
-  return !controller.Failed();
+  controller.set_timeout(5000);
+  //stub->Get(&controller, args, reply, nullptr);
+  bool success = (stub->*rpcMethod)(&controller, args, reply, nullptr);
+  if (controller.Failed)()
+  {
+    std::cout << "Get failed: " << controller.ErrorText() << std::endl;
+    return false;
+  }
+  return success;
 }
 
+bool raftServerRpcUtil::Get(raftKVRpcProctoc::GetArgs *GetArgs, raftKVRpcProctoc::GetReply *reply) {
+  return raftServerRpcUtil::SendRpcRequest(GetArgs, reply, &raftKVRpcProctoc::kvServerRpc_Stub::Get);
+}
+
+
 bool raftServerRpcUtil::PutAppend(raftKVRpcProctoc::PutAppendArgs *args, raftKVRpcProctoc::PutAppendReply *reply) {
-  MprpcController controller;
-  stub->PutAppend(&controller, args, reply, nullptr);
-  if (controller.Failed()) {
-    std::cout << controller.ErrorText() << endl;
-  }
-  return !controller.Failed();
+  return raftServerRpcUtilL::SendRpcRequest(args, reply, &raftKVRpcProctoc::kvServerRpc_Stub::PutAppend);
 }
