@@ -18,9 +18,9 @@ class raftServerRpcUtil {
   raftKVRpcProctoc::kvServerRpc_Stub* stub;
 
  public:
-  //主动调用其他节点的三个方法,可以按照mit6824来调用，但是别的节点调用自己的好像就不行了，要继承protoc提供的service类才行
+  // 主动调用其他节点的三个方法,可以按照mit6824来调用，但是别的节点调用自己的好像就不行了，要继承protoc提供的service类才行
 
-  //响应其他节点的方法
+  // 响应其他节点的方法
   bool Get(raftKVRpcProctoc::GetArgs* GetArgs, raftKVRpcProctoc::GetReply* reply);
   bool PutAppend(raftKVRpcProctoc::PutAppendArgs* args, raftKVRpcProctoc::PutAppendReply* reply);
 
