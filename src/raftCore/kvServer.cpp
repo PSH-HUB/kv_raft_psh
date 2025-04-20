@@ -10,9 +10,6 @@ void KvServer::DprintfKVDB() {
   }
   std::lock_guard<std::mutex> lg(m_mtx);
   DEFER {
-    // for (const auto &item: m_kvDB) {
-    //     DPrintf("[DBInfo ----]Key : %s, Value : %s", &item.first, &item.second);
-    // }
     m_skipList.display_list();
   };
 }
