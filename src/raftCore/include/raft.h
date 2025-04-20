@@ -75,9 +75,11 @@ m_matchIndex[i]：
 
   // 选举超时
   // 记录最近一次重置选举超时的时间  如果超时则进入candidate  其实也可以理解为最近一次收到leader心跳的时间
-  std::chrono::_V2::system_clock::time_point m_lastResetElectionTime;
+  // std::chrono::_V2::system_clock::time_point m_lastResetElectionTime;
+  // 这里统一时钟
+  std::chrono::system_clock::time_point m_lastResetElectionTime;
   // 心跳超时，用于leader
-  std::chrono::_V2::system_clock::time_point m_lastResetHearBeatTime;
+  std::chrono::system_clock::time_point m_lastResetHearBeatTime;
 
   // 2D中用于传入快照点
   // 储存了快照中的最后一个日志的Index和Term
@@ -135,10 +137,6 @@ m_matchIndex[i]：
 
   void Start(Op command, int *newLogIndex, int *newLogTerm, bool *isLeader);
 
-  // Snapshot the service says it has created a snapshot that has
-  // all info up to and including index. this means the
-  // service no longer needs the log through (and including)
-  // that index. Raft should now trim its log as much as possible.
   // index代表是快照apply应用的index,而snapshot代表的是上层service传来的快照字节流，包括了Index之前的数据
   // 这个函数的目的是把安装到快照里的日志抛弃，并安装快照数据，同时更新快照下标，属于peers自身主动更新，与leader发送快照不冲突
   // 即服务层主动发起请求raft保存snapshot里面的数据，index是用来表示snapshot快照执行到了哪条命令
