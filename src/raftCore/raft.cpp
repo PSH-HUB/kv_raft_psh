@@ -1003,7 +1003,6 @@ void Raft::init(std::vector<std::shared_ptr<RaftRpcUtil>> peers, int me, std::sh
   readPersist(m_persister->ReadRaftState());  // 崩溃后读取持久化存储的状态
   if (m_lastSnapshotIncludeIndex > 0) {
     m_lastApplied = m_lastSnapshotIncludeIndex;
-    // rf.commitIndex = rf.lastSnapshotIncludeIndex   todo ：崩溃恢复为何不能读取commitIndex
     /* 如果 m_lastSnapshotIncludeIndex > 0，说明已经安装过快照：
     需要把 m_lastApplied 设为 m_lastSnapshotIncludeIndex，因为快照已经应用到状态机。
     但 不能直接设置 m_commitIndex 为 m_lastSnapshotIncludeIndex，否则可能导致错误。

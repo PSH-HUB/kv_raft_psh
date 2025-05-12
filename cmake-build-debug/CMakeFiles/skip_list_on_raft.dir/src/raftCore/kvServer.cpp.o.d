@@ -840,20 +840,20 @@ CMakeFiles/skip_list_on_raft.dir/src/raftCore/kvServer.cpp.o: \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/common/include/config.h \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/skipList/include/skipList.h \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/rpc/include/rpcprovider.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/EventLoop.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Mutex.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/CurrentThread.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Types.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/noncopyable.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Timestamp.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/copyable.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Callbacks.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TimerId.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/InetAddress.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/StringPiece.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TcpConnection.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Buffer.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Endian.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TcpServer.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Atomic.h \
+ /usr/local/include/muduo/net/EventLoop.h \
+ /usr/local/include/muduo/base/Mutex.h \
+ /usr/local/include/muduo/base/CurrentThread.h \
+ /usr/local/include/muduo/base/Types.h \
+ /usr/local/include/muduo/base/noncopyable.h \
+ /usr/local/include/muduo/base/Timestamp.h \
+ /usr/local/include/muduo/base/copyable.h \
+ /usr/local/include/muduo/net/Callbacks.h \
+ /usr/local/include/muduo/net/TimerId.h \
+ /usr/local/include/muduo/net/InetAddress.h \
+ /usr/local/include/muduo/base/StringPiece.h \
+ /usr/local/include/muduo/net/TcpConnection.h \
+ /usr/local/include/muduo/net/Buffer.h \
+ /usr/local/include/muduo/net/Endian.h \
+ /usr/local/include/muduo/net/TcpServer.h \
+ /usr/local/include/muduo/base/Atomic.h \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/rpc/include/mprpcconfig.h
