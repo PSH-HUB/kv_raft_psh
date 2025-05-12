@@ -4,6 +4,8 @@
 #include <memory>
 #include "config.h"
 #include "util.h"
+
+using namespace std;
 // args 是leaders发送的请求参数   reply是follower 给leaders的响应  用于日志同步和心跳机制 所以这里主要是针对follower的
 // 检查任期号（Term）是否一致。 检查日志一致性。 追加新的日志条目。更新提交索引（Commit Index）。设置回复状态。
 void Raft::AppendEntries1(const raftRpcProctoc::AppendEntriesArgs* args, raftRpcProctoc::AppendEntriesReply* reply) {
@@ -972,75 +974,56 @@ void Raft::Start(Op command, int* newLogIndex, int* newLogTerm, bool* isLeader) 
   *isLeader = true;
 }
 
+// 初始化Raft节点
 void Raft::init(std::vector<std::shared_ptr<RaftRpcUtil>> peers, int me, std::shared_ptr<Persister> persister,
                 std::shared_ptr<LockQueue<ApplyMsg>> applyCh) {
-  m_peers = peers;          // 与其他节点沟通的rpc类
-  m_persister = persister;  // 持久化类
-  m_me = me;                // 标记自己 该节点的唯一标识符  用来区分其余的节点
-  // Your initialization code here (2A, 2B, 2C).
-  m_mtx.lock();
-
-  // applier
-  this->applyChan = applyCh;  // 与kv-server沟通
-  //    rf.ApplyMsgQueue = make(chan ApplyMsg)
-  m_currentTerm = 0;    // 当前任期
-  m_status = Follower;  // 大家一开始都初始化为follower
-  m_commitIndex = 0;    // 初始化提交的日志索引
-  m_lastApplied = 0;    // 初始化提交到状态机的日志
-  m_logs.clear();       // 开始日志清空
+  // 1. 初始化基本成员变量
+  // - peers: 与其他节点通信的RPC类
+  // - persister: 持久化存储类
+  // - me: 当前节点的唯一标识符
+  // - applyCh: 与KVServer通信的通道
+  m_peers = peers;
+  m_persister = persister;
+  m_me = me;
+  this->applyChan = applyCh;
+  m_mtx.lock();  // todo:优化锁的使用
+  // 2. 初始化Raft状态
+  // - 当前任期、角色状态、提交索引、已应用索引、下次发送索引和匹配索引等(注意这里是数组,注意这里一开始不知道大小
+  // 要push)
+  // - 初始化日志、投票状态、快照相关变量
+  // - 初始化选举和心跳定时器
+  m_currentTerm = 0;
+  m_status = Follower;
+  m_commitIndex = 0;
+  m_lastApplied = 0;
   for (int i = 0; i < m_peers.size(); i++) {
-    m_matchIndex.push_back(0);  // 用于记录当前已复制的某个节点i的日志的最高索引
-    m_nextIndex.push_back(0);   // 用于记录leader的下一次给某个节点i发送日志的索引
+    m_matchIndex.push_back(0);
+    m_nextIndex.push_back(0);
   }
-  m_votedFor = -1;  // 投票的初始状态
+  m_logs.clear();  // 代表初始化
+  m_votedFor = -1;
+  m_lastSnapshotIncludeIndex = 0;
+  m_lastSnapshotIncludeTerm = 0;
+  m_lastResetElectionTime = std::chrono::system_clock::now();
+  m_lastResetHearBeatTime = chrono::system_clock::now();
 
-  m_lastSnapshotIncludeIndex = 0;                              // 快照的最后索引
-  m_lastSnapshotIncludeTerm = 0;                               // 快照的最后任期
-  m_lastResetElectionTime = std::chrono::system_clock::now();  // 记录选举超时的时间
-  m_lastResetHearBeatTime = std::chrono::system_clock::now();  // 记录心跳超时的时间
-
-  // initialize from state persisted before a crash
-  readPersist(m_persister->ReadRaftState());  // 崩溃后读取持久化存储的状态
+  // 3. 从持久化存储中恢复状态 注意这里为什么从这里直接恢复了
+  // - 读取崩溃前的持久化状态
+  // - 如果存在快照，更新已应用索引
+  readPersist(m_persister->ReadRaftState());
   if (m_lastSnapshotIncludeIndex > 0) {
     m_lastApplied = m_lastSnapshotIncludeIndex;
-    /* 如果 m_lastSnapshotIncludeIndex > 0，说明已经安装过快照：
-    需要把 m_lastApplied 设为 m_lastSnapshotIncludeIndex，因为快照已经应用到状态机。
-    但 不能直接设置 m_commitIndex 为 m_lastSnapshotIncludeIndex，否则可能导致错误。
-    1. 避免不一致问题
-    commitIndex 需要确保：Leader 已经复制了相应的日志条目。大多数节点已经提交了该日志。但崩溃恢复时，节点可能还未与
-    Leader 重新同步，如果直接把 commitIndex 设为
-    lastSnapshotIncludeIndex，会导致Follower认为日志已提交，可能造成状态不一致。
-    2. 需要等 Leader 重新确认 commitIndex
-    Follower 需要等待 Leader 通过心跳或日志同步告知最新的 commitIndex，不能自己盲目修改。Leader 在 AppendEntries RPC
-    里会同步 commitIndex，Follower 只有收到 Leader 的 commitIndex 更新后，才能安全地提交日志。*/
+    // m_commitIndex = m_lastSnapshotIncludeIndex;注意这里为什么不行 避免状态不一致
   }
-
-  DPrintf("[Init&ReInit] Sever %d, term %d, lastSnapshotIncludeIndex {%d} , lastSnapshotIncludeTerm {%d}", m_me,
-          m_currentTerm, m_lastSnapshotIncludeIndex, m_lastSnapshotIncludeTerm);
-
-  m_mtx.unlock();  // 完成初始化之后解锁 以便于其他线程或者协程可以访问共享数据
-
-  m_ioManager = std::make_unique<monsoon::IOManager>(FIBER_THREAD_NUM, FIBER_USE_CALLER_THREAD);
-
-  // start ticker fiber to start elections
-  // 启动三个循环定时器
-  // todo:原来是启动了三个线程，现在是直接使用了协程，三个函数中leaderHearBeatTicker
-  // electionTimeOutTicker执行时间是恒定的，applierTicker时间受到数据库响应延迟和两次apply之间请求数量的影响，这个随着数据量增多可能不太合理，最好其还是启用一个线程。
-  m_ioManager->scheduler([this]() -> void { this->leaderHearBeatTicker(); });  // leader发送心跳信号 保持领导身份
-  m_ioManager->scheduler(
-      [this]() -> void { this->electionTimeOutTicker(); });  // 超时选举           若未收到心跳 触发选举
-
-  std::thread t3(&Raft::applierTicker, this);  // 将日志应用到状态机
-  t3.detach();
-
-  // std::thread t(&Raft::leaderHearBeatTicker, this);
-  // t.detach();
-  //
-  // std::thread t2(&Raft::electionTimeOutTicker, this);
-  // t2.detach();
-  //
-  // std::thread t3(&Raft::applierTicker, this);
-  // t3.detach();
+  m_mtx.unlock();
+  // 4. 启动协程或线程
+  // - 启动心跳定时器（leader发送心跳）
+  // - 启动选举超时定时器（触发选举）
+  // - 启动日志应用线程（将日志应用到状态机）
+  m_iomanager = make_unique<monsoon::IOManager>(FIBER_THREAD_NUM, FIBER_USE_CALLER_THREAD);
+  m_ioManager->scheduler([this]() -> void { this->leaderHearBeatTicker(); });
+  m_ioManager->scheduler([this]() -> void { this->electionTimeOutTicker(); });
+  m_ioManager->scheduler([this]() -> void { this->applierTicker(); });
 }
 
 std::string Raft::persistData() {
