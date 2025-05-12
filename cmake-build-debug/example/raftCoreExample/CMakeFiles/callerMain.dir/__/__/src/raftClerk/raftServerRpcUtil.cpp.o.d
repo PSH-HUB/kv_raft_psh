@@ -327,9 +327,8 @@ example/raftCoreExample/CMakeFiles/callerMain.dir/__/__/src/raftClerk/raftServer
  /usr/include/c++/11/pstl/glue_numeric_defs.h \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/rpc/include/mprpccontroller.h \
  /home/kv/kvraft/KVstorageBaseRaft-cpp-main/src/rpc/include/rpcprovider.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/EventLoop.h \
- /usr/include/boost/any.hpp /usr/include/boost/config.hpp \
- /usr/include/boost/config/user.hpp \
+ /usr/local/include/muduo/net/EventLoop.h /usr/include/boost/any.hpp \
+ /usr/include/boost/config.hpp /usr/include/boost/config/user.hpp \
  /usr/include/boost/config/detail/select_compiler_config.hpp \
  /usr/include/boost/config/compiler/gcc.hpp \
  /usr/include/boost/config/detail/select_stdlib_config.hpp \
@@ -376,18 +375,18 @@ example/raftCoreExample/CMakeFiles/callerMain.dir/__/__/src/raftClerk/raftServer
  /usr/include/boost/core/enable_if.hpp \
  /usr/include/boost/core/addressof.hpp \
  /usr/include/boost/type_traits/is_same.hpp \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Mutex.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/CurrentThread.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Types.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/noncopyable.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Timestamp.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/copyable.h \
+ /usr/local/include/muduo/base/Mutex.h \
+ /usr/local/include/muduo/base/CurrentThread.h \
+ /usr/local/include/muduo/base/Types.h \
+ /usr/local/include/muduo/base/noncopyable.h \
+ /usr/local/include/muduo/base/Timestamp.h \
+ /usr/local/include/muduo/base/copyable.h \
  /usr/include/boost/operators.hpp \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Callbacks.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TimerId.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/InetAddress.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/StringPiece.h \
- /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/local/include/muduo/net/Callbacks.h \
+ /usr/local/include/muduo/net/TimerId.h \
+ /usr/local/include/muduo/net/InetAddress.h \
+ /usr/local/include/muduo/base/StringPiece.h /usr/include/netinet/in.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
  /usr/include/x86_64-linux-gnu/bits/socket_type.h \
@@ -404,8 +403,8 @@ example/raftCoreExample/CMakeFiles/callerMain.dir/__/__/src/raftClerk/raftServer
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
  /usr/include/x86_64-linux-gnu/bits/in.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TcpConnection.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Buffer.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/Endian.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/net/TcpServer.h \
- /home/kv/kvraft/build/release-install-cpp11/include/muduo/base/Atomic.h
+ /usr/local/include/muduo/net/TcpConnection.h \
+ /usr/local/include/muduo/net/Buffer.h \
+ /usr/local/include/muduo/net/Endian.h \
+ /usr/local/include/muduo/net/TcpServer.h \
+ /usr/local/include/muduo/base/Atomic.h
